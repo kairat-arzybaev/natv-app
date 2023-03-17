@@ -11,11 +11,11 @@ class CustomTextbutton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
         onPressed: () {},
         child: Text(
           text,
-          style: const TextStyle(color: Color(0xFFC20937)),
+          style: const TextStyle(
+              color: Color(0xFFC20937), decoration: TextDecoration.underline),
         ));
   }
 }

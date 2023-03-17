@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:natv_app/widgets/banner_ad_widget.dart';
-import 'package:natv_app/widgets/ticker_ad_widget.dart';
+import 'package:natv_app/widgets/banner_ad_tab.dart';
+import 'package:natv_app/widgets/ticker_ad_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Expanded(
               child: TabBarView(
                   controller: _tabController,
-                  children: const <Widget>[TickerAdView(), BannerAdView()]),
+                  children: const <Widget>[TickerAdTab(), BannerAdTab()]),
             )
           ],
         ),
