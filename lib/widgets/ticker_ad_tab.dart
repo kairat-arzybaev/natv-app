@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:natv_app/models/channel.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:natv_app/repositories/api_repository.dart';
+import 'package:natv_app/widgets/channel_widget.dart';
 import 'package:natv_app/widgets/custom_elev_button.dart';
+import 'package:natv_app/widgets/custom_textbutton.dart';
 
 import 'package:natv_app/widgets/footer_widget.dart';
 
@@ -14,6 +19,16 @@ class TickerAdTab extends StatefulWidget {
 }
 
 class _TickerAdTabState extends State<TickerAdTab> {
+  late Future<List<Channel>> channelsFuture;
+  final double sum = 1.0;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    channelsFuture = ApiRepository.getChannelsList();
+  }
+
   @override
   Widget build(BuildContext context) {
     var sizedBox20 = const SizedBox(height: 20);
@@ -34,20 +49,30 @@ class _TickerAdTabState extends State<TickerAdTab> {
               color: const Color(0xFFC20937),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   Text(
                     'ВВЕДИТЕ ТЕКСТ ОБЪЯВЛЕНИЯ',
-                    style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14),
+                    style: GoogleFonts.arimo(
+                      color: const Color(0xFFFFFFFF),
+                      fontSize: 16,
+                    ),
                   ),
-                  Text('Символов: ',
-                      style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 14))
+                  Text('Символов: ${_controller.text.length}',
+                      style: const TextStyle(
+                          color: Color(0xFFFFFFFF), fontSize: 16))
                 ],
               ),
             ),
-            const TextField(
+            TextField(
+              controller: _controller,
+              onChanged: (value) {
+                setState(() {
+                  value = _controller.text;
+                });
+              },
               maxLines: 7,
               cursorColor: Colors.grey,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFFFFFFF),
                   hintText: 'Отдам даром 0 789 545654'),
@@ -67,53 +92,28 @@ class _TickerAdTabState extends State<TickerAdTab> {
             sizedBox20,
             const StepsWidget(number: '3', description: 'Оплатите объявление!'),
             // List of channels
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: const EdgeInsets.all(25),
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 65,
-                          width: 130,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300)),
-                          child: Image.network(
-                              'https://natv.kg/cache/files/1305.jpg_w130_h65_resize.jpg'),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        const Text('HTC')
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300)),
-                      child: Row(
-                        children: const [
-                          Spacer(),
-                          Icon(
-                            Icons.calendar_month_outlined,
-                            size: 30,
-                          )
-                        ],
+
+            FutureBuilder(
+                future: channelsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(
+                        height: 1,
                       ),
-                    ),
-                    const Text(
-                      '0.0 сом',
-                      style: TextStyle(fontSize: 18, color: Color(0xFF808084)),
-                    )
-                  ],
-                ),
-              ),
-            ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) => ChannelWidget(
+                          channelName: snapshot.data![index].channelName,
+                          sum: snapshot.data![index].pricePerLetter,
+                          logo: snapshot.data![index].logo),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+                  return const CircularProgressIndicator();
+                }),
 
             userInfo(),
             sizedBox20,
@@ -126,6 +126,7 @@ class _TickerAdTabState extends State<TickerAdTab> {
               color: Colors.grey,
             ),
             footerWidget(),
+            CustomTextbutton(text: 'This is for testing')
           ],
         ),
       ),

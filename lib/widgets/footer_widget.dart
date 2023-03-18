@@ -5,7 +5,6 @@ import 'custom_textbutton.dart';
 Widget footerWidget() {
   return Align(
     child: Column(
-      mainAxisSize: MainAxisSize.min,
       children: const [
         CustomTextbutton(text: 'О проекте'),
         CustomTextbutton(text: 'Способы оплаты'),

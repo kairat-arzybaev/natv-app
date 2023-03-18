@@ -1,89 +1,52 @@
 class Channel {
-  int? channelId;
-  String? channelName;
-  String? logoPath;
-  bool? active;
-  Price? price;
-  List<Discounts>? discounts;
+  Channel({
+    required this.id,
+    required this.channelName,
+    required this.logo,
+    required this.pricePerLetter,
+    required this.discounts,
+  });
 
-  Channel(
-      {this.channelId,
-      this.channelName,
-      this.logoPath,
-      this.active,
-      this.price,
-      this.discounts});
+  final int id;
+  final String channelName;
+  final String logo;
+  final double pricePerLetter;
+  final List<Discount> discounts;
 
-  Channel.fromJson(Map<String, dynamic> json) {
-    channelId = json['channelId'];
-    channelName = json['channelName'];
-    logoPath = json['logoPath'];
-    active = json['active'];
-    price = json['price'] != null ? Price.fromJson(json['price']) : null;
-    if (json['discounts'] != null) {
-      discounts = <Discounts>[];
-      json['discounts'].forEach((v) {
-        discounts!.add(Discounts.fromJson(v));
-      });
-    }
-  }
+  factory Channel.fromJson(json) => Channel(
+        id: json["id"],
+        channelName: json["channelName"],
+        logo: json["logo"],
+        pricePerLetter: json["pricePerLetter"],
+        discounts: List<Discount>.from(
+            json["discounts"].map((x) => Discount.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['channelId'] = channelId;
-    data['channelName'] = channelName;
-    data['logoPath'] = logoPath;
-    data['active'] = active;
-    if (price != null) {
-      data['price'] = price!.toJson();
-    }
-    if (discounts != null) {
-      data['discounts'] = discounts!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "channelName": channelName,
+        "logo": logo,
+        "pricePerLetter": pricePerLetter,
+        "discounts": List<dynamic>.from(discounts.map((x) => x.toJson())),
+      };
 }
 
-class Price {
-  int? id;
-  int? bannerPrice;
-  int? pricePerLetter;
+class Discount {
+  Discount({
+    required this.discount,
+    required this.fromDaysCount,
+  });
 
-  Price({this.id, this.bannerPrice, this.pricePerLetter});
+  final int discount;
+  final int fromDaysCount;
 
-  Price.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    bannerPrice = json['bannerPrice'];
-    pricePerLetter = json['pricePerLetter'];
-  }
+  factory Discount.fromJson(Map<String, dynamic> json) => Discount(
+        discount: json["discount"],
+        fromDaysCount: json["fromDaysCount"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['bannerPrice'] = bannerPrice;
-    data['pricePerLetter'] = pricePerLetter;
-    return data;
-  }
-}
-
-class Discounts {
-  int? id;
-  int? discount;
-  int? fromDaysCount;
-
-  Discounts({this.id, this.discount, this.fromDaysCount});
-
-  Discounts.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    discount = json['discount'];
-    fromDaysCount = json['fromDaysCount'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['discount'] = discount;
-    data['fromDaysCount'] = fromDaysCount;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "discount": discount,
+        "fromDaysCount": fromDaysCount,
+      };
 }
