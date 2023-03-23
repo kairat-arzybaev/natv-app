@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:natv_app/models/channel.dart';
+import 'package:natv_app/repositories/api_repository.dart';
+import 'package:natv_app/widgets/channel_widget.dart';
 import 'package:natv_app/widgets/custom_elev_button.dart';
 import 'package:natv_app/widgets/footer_widget.dart';
 import 'package:natv_app/widgets/steps_widget.dart';
@@ -12,6 +15,14 @@ class BannerAdTab extends StatefulWidget {
 }
 
 class _BannerAdTabState extends State<BannerAdTab> {
+  late Future<List<Channel>> channelsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    channelsFuture = ApiRepository.getChannelsList();
+  }
+
   @override
   Widget build(BuildContext context) {
     var sizedBox20 = const SizedBox(
@@ -95,7 +106,56 @@ class _BannerAdTabState extends State<BannerAdTab> {
                   'Выберите телеканалы и даты,\nи нажмите «Разместить баннер»'),
           sizedBox20,
           const StepsWidget(number: '3', description: 'Оплатите объявление!'),
-          userInfo(),
+
+          // Channels list
+          Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                width: double.infinity,
+                color: const Color(0xFFFFFFFF),
+                child: const Text(
+                  'ВЫБОР КАНАЛОВ',
+                  style: TextStyle(fontSize: 30, color: Color(0xFFC20937)),
+                ),
+              ),
+              FutureBuilder(
+                  future: channelsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) => ChannelWidget(
+                          channelName: snapshot.data![index].channelName,
+                          logo: snapshot.data![index].logo,
+                          pricePerLetter: snapshot.data![index].pricePerLetter,
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
+                    return const CircularProgressIndicator();
+                  }),
+              Container(
+                width: double.infinity,
+                color: Colors.white,
+                child: Row(
+                  children: const [
+                    Text('Общая сумма: '),
+                    Text(
+                      'X com',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          UserInfo(),
           sizedBox20,
           const CustomElevButton(text: 'РАЗМЕСТИТЬ БАННЕР'),
           const SizedBox(

@@ -14,10 +14,10 @@ class Channel {
   final List<Discount> discounts;
 
   factory Channel.fromJson(json) => Channel(
-        id: json["id"],
+        id: json["id"] ?? 0,
         channelName: json["channelName"],
         logo: json["logo"],
-        pricePerLetter: json["pricePerLetter"],
+        pricePerLetter: json["pricePerLetter"] ?? 0.0,
         discounts: List<Discount>.from(
             json["discounts"].map((x) => Discount.fromJson(x))),
       );
@@ -41,8 +41,8 @@ class Discount {
   final int fromDaysCount;
 
   factory Discount.fromJson(Map<String, dynamic> json) => Discount(
-        discount: json["discount"],
-        fromDaysCount: json["fromDaysCount"],
+        discount: json["discount"] ?? 0,
+        fromDaysCount: json["fromDaysCount"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {

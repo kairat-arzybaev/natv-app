@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:natv_app/repositories/api_repository.dart';
 import 'package:natv_app/widgets/channel_widget.dart';
 import 'package:natv_app/widgets/custom_elev_button.dart';
-import 'package:natv_app/widgets/custom_textbutton.dart';
 
 import 'package:natv_app/widgets/footer_widget.dart';
 
@@ -20,8 +19,9 @@ class TickerAdTab extends StatefulWidget {
 
 class _TickerAdTabState extends State<TickerAdTab> {
   late Future<List<Channel>> channelsFuture;
-  final double sum = 1.0;
+
   final TextEditingController _controller = TextEditingController();
+  final double totalPrice = 0.0;
 
   @override
   void initState() {
@@ -31,6 +31,7 @@ class _TickerAdTabState extends State<TickerAdTab> {
 
   @override
   Widget build(BuildContext context) {
+    int symbolsCount = _controller.text.length;
     var sizedBox20 = const SizedBox(height: 20);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -57,7 +58,7 @@ class _TickerAdTabState extends State<TickerAdTab> {
                       fontSize: 16,
                     ),
                   ),
-                  Text('Символов: ${_controller.text.length}',
+                  Text('Символов: $symbolsCount',
                       style: const TextStyle(
                           color: Color(0xFFFFFFFF), fontSize: 16))
                 ],
@@ -91,31 +92,64 @@ class _TickerAdTabState extends State<TickerAdTab> {
                     'Выберите телеканалы и даты, и \nнажмите"Разместить объявление"'),
             sizedBox20,
             const StepsWidget(number: '3', description: 'Оплатите объявление!'),
+
             // List of channels
-
-            FutureBuilder(
-                future: channelsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                        height: 1,
+            Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  width: double.infinity,
+                  color: const Color(0xFFFFFFFF),
+                  child: const Text(
+                    'ВЫБОР КАНАЛОВ',
+                    style: TextStyle(fontSize: 30, color: Color(0xFFC20937)),
+                  ),
+                ),
+                FutureBuilder(
+                    future: channelsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            var channel = snapshot.data![index];
+                            return ChannelWidget(
+                              channelName: channel.channelName,
+                              logo: channel.logo,
+                              pricePerLetter: channel.pricePerLetter,
+                              symbolsCount: symbolsCount,
+                            );
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+                      return const CircularProgressIndicator();
+                    }),
+                Container(
+                  padding: const EdgeInsets.all(25),
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      const Text(
+                        'Общая сумма: ',
+                        style: TextStyle(fontSize: 20),
                       ),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => ChannelWidget(
-                          channelName: snapshot.data![index].channelName,
-                          sum: snapshot.data![index].pricePerLetter,
-                          logo: snapshot.data![index].logo),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-                  return const CircularProgressIndicator();
-                }),
-
-            userInfo(),
+                      Text(
+                        '$totalPrice com',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            UserInfo(),
             sizedBox20,
             const CustomElevButton(text: 'РАЗМЕСТИТЬ ОБЪЯВЛЕНИЕ'),
             const SizedBox(
@@ -126,7 +160,6 @@ class _TickerAdTabState extends State<TickerAdTab> {
               color: Colors.grey,
             ),
             footerWidget(),
-            CustomTextbutton(text: 'This is for testing')
           ],
         ),
       ),
