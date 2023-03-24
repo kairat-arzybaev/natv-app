@@ -19,9 +19,9 @@ class TickerAdTab extends StatefulWidget {
 
 class _TickerAdTabState extends State<TickerAdTab> {
   late Future<List<Channel>> channelsFuture;
-
+  int _numChannels = 9;
   final TextEditingController _controller = TextEditingController();
-  final double totalPrice = 0.0;
+  double totalPrice = 0.0;
 
   @override
   void initState() {
@@ -113,15 +113,25 @@ class _TickerAdTabState extends State<TickerAdTab> {
                         return ListView.builder(
                           physics: const ScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: snapshot.data!.length,
+                          itemCount: _numChannels,
                           itemBuilder: (context, index) {
-                            var channel = snapshot.data![index];
-                            return ChannelWidget(
-                              channelName: channel.channelName,
-                              logo: channel.logo,
-                              pricePerLetter: channel.pricePerLetter,
-                              symbolsCount: symbolsCount,
-                            );
+                            if (index == _numChannels - 1) {
+                              return CustomElevButton(
+                                  text: 'БОЛЬШЕ КАНАЛОВ',
+                                  onPressed: () {
+                                    setState(() {
+                                      _numChannels = snapshot.data!.length;
+                                    });
+                                  });
+                            } else {
+                              var channel = snapshot.data![index];
+                              return ChannelWidget(
+                                channelName: channel.channelName,
+                                logo: channel.logo,
+                                pricePerLetter: channel.pricePerLetter,
+                                symbolsCount: symbolsCount,
+                              );
+                            }
                           },
                         );
                       } else if (snapshot.hasError) {
@@ -151,7 +161,10 @@ class _TickerAdTabState extends State<TickerAdTab> {
             ),
             UserInfo(),
             sizedBox20,
-            const CustomElevButton(text: 'РАЗМЕСТИТЬ ОБЪЯВЛЕНИЕ'),
+            CustomElevButton(
+              text: 'РАЗМЕСТИТЬ ОБЪЯВЛЕНИЕ',
+              onPressed: () {},
+            ),
             const SizedBox(
               height: 40,
             ),
