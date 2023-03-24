@@ -1,21 +1,22 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ChannelWidget extends StatefulWidget {
-  const ChannelWidget({
+  ChannelWidget({
     Key? key,
     required this.logo,
     required this.channelName,
     required this.pricePerLetter,
     this.symbolsCount = 0,
+    this.orderPrice = 0.0,
   }) : super(key: key);
 
   final String logo;
   final String channelName;
   final double pricePerLetter;
   final int symbolsCount;
+  double orderPrice;
 
   @override
   State<ChannelWidget> createState() => _ChannelWidgetState();
@@ -25,13 +26,14 @@ class _ChannelWidgetState extends State<ChannelWidget> {
   final DateRangePickerController _controller = DateRangePickerController();
 
   int _dateCount = 0;
-
-  double orderPrice = 0.0;
+  double totalOrderPrice = 0.0;
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       _dateCount = args.value.length;
-      orderPrice = _dateCount * widget.pricePerLetter * widget.symbolsCount;
+      widget.orderPrice =
+          _dateCount * widget.pricePerLetter * widget.symbolsCount;
+      totalOrderPrice += widget.orderPrice;
     });
   }
 
@@ -100,7 +102,7 @@ class _ChannelWidgetState extends State<ChannelWidget> {
               ),
             ),
             Text(
-              '$orderPrice сом',
+              '${widget.orderPrice} сом',
               style: const TextStyle(fontSize: 18, color: Color(0xFF808084)),
             ),
             const Divider(
