@@ -16,6 +16,7 @@ class BannerAdTab extends StatefulWidget {
 
 class _BannerAdTabState extends State<BannerAdTab> {
   late Future<List<Channel>> channelsFuture;
+  int _numChannels = 9;
 
   @override
   void initState() {
@@ -127,12 +128,25 @@ class _BannerAdTabState extends State<BannerAdTab> {
                       return ListView.builder(
                         physics: const ScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => ChannelWidget(
-                          channelName: snapshot.data![index].channelName,
-                          logo: snapshot.data![index].logo,
-                          pricePerLetter: snapshot.data![index].pricePerLetter,
-                        ),
+                        itemCount: _numChannels,
+                        itemBuilder: (context, index) {
+                          if (index == _numChannels - 1) {
+                            return CustomElevButton(
+                                text: 'БОЛЬШЕ КАНАЛОВ',
+                                onPressed: () {
+                                  setState(() {
+                                    _numChannels = snapshot.data!.length;
+                                  });
+                                });
+                          } else {
+                            var channel = snapshot.data![index];
+                            return ChannelWidget(
+                              channelName: channel.channelName,
+                              logo: channel.logo,
+                              pricePerLetter: channel.pricePerLetter,
+                            );
+                          }
+                        },
                       );
                     } else if (snapshot.hasError) {
                       return Text('${snapshot.error}');
@@ -157,7 +171,7 @@ class _BannerAdTabState extends State<BannerAdTab> {
 
           UserInfo(),
           sizedBox20,
-          const CustomElevButton(text: 'РАЗМЕСТИТЬ БАННЕР'),
+          CustomElevButton(text: 'РАЗМЕСТИТЬ БАННЕР', onPressed: () {}),
           const SizedBox(
             height: 40,
           ),

@@ -5,9 +5,11 @@ class CustomElevButton extends StatelessWidget {
   const CustomElevButton({
     Key? key,
     required this.text,
+    required this.onPressed,
   }) : super(key: key);
 
   final String text;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class CustomElevButton extends StatelessWidget {
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFC20937)),
-          onPressed: () {},
+          onPressed: onPressed,
           child: Text(
             text.toUpperCase(),
           )),
