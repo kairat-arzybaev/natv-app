@@ -18,11 +18,12 @@ class TickerAdTab extends StatefulWidget {
 }
 
 class _TickerAdTabState extends State<TickerAdTab> {
-  late Future<List<Channel>> channelsFuture;
+  late Future<List<TVChannel>> channelsFuture;
   int _numChannels = 10;
   bool _showMoreChannelsButton = true;
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _adController = TextEditingController();
   double totalPrice = 0.0;
+  int symbolCount = 0;
 
   @override
   void initState() {
@@ -31,8 +32,13 @@ class _TickerAdTabState extends State<TickerAdTab> {
   }
 
   @override
+  void dispose() {
+    _adController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int symbolsCount = _controller.text.length;
     var sizedBox20 = const SizedBox(height: 20);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -59,17 +65,17 @@ class _TickerAdTabState extends State<TickerAdTab> {
                       fontSize: 16,
                     ),
                   ),
-                  Text('Символов: $symbolsCount',
+                  Text('Символов: $symbolCount',
                       style: const TextStyle(
                           color: Color(0xFFFFFFFF), fontSize: 16))
                 ],
               ),
             ),
             TextField(
-              controller: _controller,
+              controller: _adController,
               onChanged: (value) {
                 setState(() {
-                  value = _controller.text;
+                  symbolCount = value.length;
                 });
               },
               maxLines: 7,
@@ -129,10 +135,9 @@ class _TickerAdTabState extends State<TickerAdTab> {
                             } else {
                               var channel = snapshot.data![index];
                               return ChannelWidget(
-                                channelName: channel.channelName,
-                                logo: channel.logo,
+                                channel: channel,
                                 pricePerLetter: channel.pricePerLetter,
-                                symbolsCount: symbolsCount,
+                                symbolsCount: symbolCount,
                               );
                             }
                           },
