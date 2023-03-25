@@ -19,7 +19,8 @@ class TickerAdTab extends StatefulWidget {
 
 class _TickerAdTabState extends State<TickerAdTab> {
   late Future<List<Channel>> channelsFuture;
-  int _numChannels = 9;
+  int _numChannels = 10;
+  bool _showMoreChannelsButton = true;
   final TextEditingController _controller = TextEditingController();
   double totalPrice = 0.0;
 
@@ -115,12 +116,14 @@ class _TickerAdTabState extends State<TickerAdTab> {
                           shrinkWrap: true,
                           itemCount: _numChannels,
                           itemBuilder: (context, index) {
-                            if (index == _numChannels - 1) {
+                            if (index == _numChannels - 1 &&
+                                _showMoreChannelsButton) {
                               return CustomElevButton(
                                   text: 'БОЛЬШЕ КАНАЛОВ',
                                   onPressed: () {
                                     setState(() {
                                       _numChannels = snapshot.data!.length;
+                                      _showMoreChannelsButton = false;
                                     });
                                   });
                             } else {
