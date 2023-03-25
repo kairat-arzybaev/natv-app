@@ -1,21 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import '../models/channel.dart';
 
 class ChannelWidget extends StatefulWidget {
   const ChannelWidget({
     Key? key,
-    required this.logo,
-    required this.channelName,
     required this.pricePerLetter,
     this.symbolsCount = 0,
+    required this.channel,
   }) : super(key: key);
 
-  final String logo;
-  final String channelName;
   final double pricePerLetter;
   final int symbolsCount;
+  final TVChannel channel;
 
   @override
   State<ChannelWidget> createState() => _ChannelWidgetState();
@@ -76,10 +75,10 @@ class _ChannelWidgetState extends State<ChannelWidget> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.grey.shade300)),
-                  child: Image.network(widget.logo),
+                  child: Image.network(widget.channel.logo),
                 ),
                 Text(
-                  widget.channelName.toUpperCase(),
+                  widget.channel.channelName.toUpperCase(),
                   style: const TextStyle(fontSize: 16),
                 )
               ],

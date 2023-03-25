@@ -15,7 +15,7 @@ class BannerAdTab extends StatefulWidget {
 }
 
 class _BannerAdTabState extends State<BannerAdTab> {
-  late Future<List<Channel>> channelsFuture;
+  late Future<List<TVChannel>> channelsFuture;
   int _numChannels = 9;
 
   @override
@@ -141,9 +141,8 @@ class _BannerAdTabState extends State<BannerAdTab> {
                           } else {
                             var channel = snapshot.data![index];
                             return ChannelWidget(
-                              channelName: channel.channelName,
-                              logo: channel.logo,
                               pricePerLetter: channel.pricePerLetter,
+                              channel: channel,
                             );
                           }
                         },

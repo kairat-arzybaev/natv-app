@@ -1,5 +1,5 @@
-class Channel {
-  Channel({
+class TVChannel {
+  TVChannel({
     required this.id,
     required this.channelName,
     required this.logo,
@@ -13,7 +13,7 @@ class Channel {
   final double pricePerLetter;
   final List<Discount> discounts;
 
-  factory Channel.fromJson(json) => Channel(
+  factory TVChannel.fromJson(json) => TVChannel(
         id: json["id"] ?? 0,
         channelName: json["channelName"],
         logo: json["logo"],
